@@ -32,4 +32,17 @@ public class PersonDAO {
         person.setId(++PEOPLE_COUNT);
         people.add(person);
     }
+
+    // Get person from form edit
+    public void update(int id, Person updatedPerson) {
+        //Find person for his id
+        Person personToBeUpdated = show(id);
+
+        personToBeUpdated.setName(updatedPerson.getName());
+    }
+
+    public void delete(int id) {
+        people.removeIf(person -> person.getId() == id);
+
+    }
 }
