@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+
+<a href="/test-batch-update/without">Ordinary method (x1000)</a>
+</br>
+<a href="/test-batch-update/with">Batch update</a>
+</body>
+</html>
+
+
+<!--    thymeleaf - перебор коллекции и свойства модели&ndash;&gt;-->
+<!--    &lt;!&ndash;people - коллекция&ndash;&gt;-->
+<!--    &lt;!&ndash;person - переменная в цикле &ndash;&gt;-->
+<!--    <div th:each="a : ${people}">-->
+<!--        &lt;!&ndash;th:text="${person} заменим содержимое ссылки на переменную person &ndash;&gt;-->
+<!--        &lt;!&ndash;th:text="@(/people/{id}(id=${person.getId()})) - генерим ссылку и указываем,-->
+<!--            откуда берется в ней id&ndash;&gt;-->
+
+<!--        &lt;!&ndash;-->
+<!--        @{} - указывает, что внутри будет ссылка-->
+<!--        /people/ - просто текст статичный-->
+<!--        {id} - переменная, которая будет объявлена дальше-->
+<!--        () - внутри будет объявлены переменные в {} внутри ссылке. Пример: {id}-->
+<!--        (id= - начинаем объявлять переменную внутри ссылки - {id}-->
+<!--        ${a.getId()} - вызываем переменную объявленную ранее и метод этой переменной-->
+<!--    -->
+<!--        a - объявлена в цикле for th:each="a : ${people}"-->
+<!--        Где ${people} - переменная, возвращенная из контроллера: model.addAttribute("people", personDAO.index());-->
+<!--        получается for th:each="a : ${people}" при компиляции превратится в-->
+<!--        for (Person person: personDAO.index()) {-->
+<!--    -->
+<!--        }-->
+<!--        Значит в ${people} - коллекция List<Person>, ${а} будет объект Person-->
+<!--        &ndash;&gt;-->
+
+<!--        <a th:href="@{/people/{id}(id=${a.getId()})}"-->
+<!--           th:text="${a.getName()} + ',  ' + ${a.getAge()}">Здесь будет содержимое из th:text</a>-->
+<!--    </div>-->
