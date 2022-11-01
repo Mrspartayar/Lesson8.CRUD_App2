@@ -10,6 +10,7 @@ import yar.lavr.models.Person;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PersonDAO {
@@ -29,15 +30,21 @@ public class PersonDAO {
                 .stream().findAny().orElse(null);
     }
 
+    public Optional<Person> show(String email) {
+        return jdbcTemplate.query("SELECT * FROM Person WHERE email=?", new Object[]{email},
+                new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
+    }
+
     public void save(Person person) {
-        jdbcTemplate.update("INSERT INTO Person(name,age,email) VALUES(?,?,?)", person.getName(),
-                person.getAge(), person.getEmail());
+        jdbcTemplate.update("INSERT INTO Person(name,age,email, address) VALUES(?,?,?,?)", person.getName(),
+                person.getAge(), person.getEmail(), person.getAddress());
     }
 
     // Get person from form edit
     public void update(int id, Person updatedPerson) {
-        jdbcTemplate.update("UPDATE Person SET name=?, age=?, email=? WHERE id=?",
-                updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), id);
+        jdbcTemplate.update("UPDATE Person SET name=?, age=?, email=?, address=? WHERE id=?",
+                updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(),
+                updatedPerson.getAddress(), id);
     }
 
     public void delete(int id) {
@@ -57,13 +64,13 @@ public class PersonDAO {
         }
 
         long after = System.currentTimeMillis();
-        System.out.println("Time: " + (after-before));
+        System.out.println("Time: " + (after - before));
 
 
     }
 
     public void testBatchUpdate() {
-        List<Person> people =create1000People();
+        List<Person> people = create1000People();
 
         long before = System.currentTimeMillis();
 
@@ -71,10 +78,10 @@ public class PersonDAO {
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setInt(1,people.get(i).getId());
-                        ps.setString(2,people.get(i).getName());
-                        ps.setInt(3,people.get(i).getAge());
-                        ps.setString(4,people.get(i).getEmail());
+                        ps.setInt(1, people.get(i).getId());
+                        ps.setString(2, people.get(i).getName());
+                        ps.setInt(3, people.get(i).getAge());
+                        ps.setString(4, people.get(i).getEmail());
                     }
 
                     @Override
@@ -84,14 +91,15 @@ public class PersonDAO {
                 });
 
         long after = System.currentTimeMillis();
-        System.out.println("Time: " + (after-before));
+        System.out.println("Time: " + (after - before));
     }
 
     private List<Person> create1000People() {
         List<Person> people = new ArrayList<>();
 
         for (int i = 0; i < 1000; i++) {
-            people.add(new Person(i, "Name" + i, 29, "test" + i + "mail.ru"));
+            people.add(new Person(i, "Name" + i, 29, "test" + i + "mail.ru",
+                    "Voronezh"));
         }
         return people;
     }
